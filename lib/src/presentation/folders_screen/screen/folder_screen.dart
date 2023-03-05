@@ -20,9 +20,7 @@ class FolderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     late final FolderPageCubit cubit;
     late final Future<void> future;
-    cubit = DI
-        .getInstance()
-        .folderPageCubit;
+    cubit = DI.getInstance().folderPageCubit;
     future = cubit.onScreenLoad();
     return BlocBuilder<FolderPageCubit, FolderPageState>(
       bloc: cubit,
@@ -33,7 +31,10 @@ class FolderScreen extends StatelessWidget {
             icon: AppIcons.addFolder,
             onTap: () {},
           ),
-          appBar: const BuildAppBar(),
+          appBar: const PreferredSize(
+            preferredSize: Size(double.infinity, 80),
+            child: BuildAppBar(),
+          ),
           body: SizedBox(
             width: double.infinity,
             height: double.infinity,
@@ -46,7 +47,7 @@ class FolderScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 5),
                       AppBarListData(
-                        title: '${state.folders.length ?? 0} folders',
+                        title: '${state.folders.length} folders',
                       ),
                       const SizedBox(height: 5),
                       _buildFolderList(state, cubit),
@@ -71,8 +72,12 @@ class FolderScreen extends StatelessWidget {
           horizontal: 20,
         ),
         child: DragAndDropLists(
-          onItemReorder: (int oldItemIndex, int oldListIndex, int newItemIndex,
-              int newListIndex,) {
+          onItemReorder: (
+            int oldItemIndex,
+            int oldListIndex,
+            int newItemIndex,
+            int newListIndex,
+          ) {
             cubit.onDragItem(oldItemIndex, newItemIndex);
           },
           onListReorder: (int oldListIndex, int newListIndex) {},

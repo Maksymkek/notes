@@ -1,3 +1,6 @@
+
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/app_colors.dart';
@@ -10,47 +13,58 @@ class DropDownMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        dropdownColor: Colors.white,
-        style: GoogleFonts.roboto(color: AppColors.darkBrown),
-        icon: const Icon(
-          Icons.more_horiz,
-          color: AppColors.darkBrown,
+    return SizedBox(
+      width: 220,
+      child: DropdownButtonHideUnderline(
+        child: ButtonTheme(
+            alignedDropdown: true,
+          child: DropdownButton<String>(
+            isExpanded: true,
+            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+            dropdownColor: Colors.white.withOpacity(0.5),
+            style: GoogleFonts.roboto(color: AppColors.darkBrown),
+            icon: const Icon(
+              Icons.more_horiz,
+              color: AppColors.darkBrown,
+            ),
+            elevation: 0,
+            iconSize: 36,
+            items: <String>[
+              DropDownItems.sortBy.name,
+              DropDownItems.sortOrder.name,
+              DropDownItems.theme.name
+            ].map((String title) {
+              return DropdownMenuItem<String>(
+                value: title,
+                child: _buildItem(title),
+              );
+            }).toList(),
+            onChanged: (_) {},
+          ),
         ),
-        elevation: 2,
-        iconSize: 36,
-        items: <String>[DropDownItems.sortBy.name, DropDownItems.sortOrder.name, DropDownItems.theme.name].map((String title) {
-          return DropdownMenuItem<String>(
-            value: title,
-            child: _buildItem(title),
-          );
-        }).toList(),
-        onChanged: (_) {},
       ),
     );
   }
 
   Widget _buildItem(String title) {
     if (title == DropDownItems.sortBy.name) {
-      return _DropDownItemWidget(
-        title: 'Sort by ',
-        items: const ['date', 'name'],
-        onTap: [() {}, () {}],
-        valueId: 0,
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: _DropDownItemWidget(
+          title: 'Sort by ',
+          items: const ['date', 'name'],
+          onTap: [() {}, () {}],
+          valueId: 0,
+        ),
       );
-    }
-    else if (title == DropDownItems.sortOrder.name) {
+    } else if (title == DropDownItems.sortOrder.name) {
       return _DropDownItemWidget(
         title: 'Sort order ',
         items: const ['ascending', 'descending'],
         onTap: [() {}, () {}],
         valueId: 1,
       );
-    }
-
-    else if (title == DropDownItems.theme.name) {
+    } else if (title == DropDownItems.theme.name) {
       return _DropDownItemWidget(
         title: 'Change theme',
         items: const ['light', 'dark'],
@@ -83,22 +97,32 @@ class _DropDownItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        icon != null ? Icon(icon, size: 32) : Text(title),
-        DropdownButtonHideUnderline(
-          child: DropdownButton(
-            elevation: 4,
-            value: icon != null ? null : items[valueId],
-            style: GoogleFonts.roboto(color: AppColors.darkBrown),
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            dropdownColor: AppColors.milkWhite,
-            items: items.map((String title) {
-              return DropdownMenuItem<String>(
-                value: title,
-                onTap: onTap[items.indexOf(title)],
-                child: Text(title),
-              );
-            }).toList(),
-            onChanged: (_) {},
+        SizedBox(
+          width: 60,
+            child: Text(title)),
+        SizedBox(
+          width: 110,
+          child: DropdownButtonHideUnderline(
+            child: ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton(
+                isExpanded: true,
+                elevation: 0,
+                icon: const Icon(Icons.abc),
+                value: items[valueId],
+                style: GoogleFonts.roboto(color: AppColors.darkBrown),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                dropdownColor: Colors.white,
+                items: items.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    onTap: onTap[items.indexOf(value)],
+                    child: Text(value,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                  );
+                }).toList(),
+                onChanged: (_) {},
+              ),
+            ),
           ),
         ),
       ],
